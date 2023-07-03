@@ -10,6 +10,7 @@ import {
     doc,
     addDoc,
 	deleteDoc,
+    orderBy,
 } from "firebase/firestore";
 
 const style = {
@@ -38,6 +39,7 @@ function App() {
         await addDoc(collection(db, "todos"), {
             text: input,
             completed: false,
+            createdAt: new Date(),
         });
 
         setInput("");
@@ -45,16 +47,16 @@ function App() {
 
     // Read todo from firebase
     useEffect(() => {
-        const q = query(collection(db, "todos"));
+        const q = query(collection(db, "todos"), orderBy("createdAt", "desc")); // Add the orderBy clause here
         const unsubscribe = onSnapshot(q, (querySnapshot) => {
-            let todosArr = [];
-            querySnapshot.forEach((doc) => {
-                todosArr.push({ ...doc.data(), id: doc.id });
-            });
-            setTodos(todosArr);
+          let todosArr = [];
+          querySnapshot.forEach((doc) => {
+            todosArr.push({ ...doc.data(), id: doc.id });
+          });
+          setTodos(todosArr);
         });
         return () => unsubscribe;
-    }, []);
+      }, []);
 
     // Update todo in firebase
     const toggleComplete = async (todo) => {
