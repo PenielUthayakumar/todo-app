@@ -47,7 +47,7 @@ function App() {
 
     // Read todo from firebase
     useEffect(() => {
-        const q = query(collection(db, "todos"), orderBy("createdAt", "desc"), orderBy("completed", "asc")); // Add the orderBy clause here
+        const q = query(collection(db, "todos"), orderBy("createdAt", "desc")); 
         const unsubscribe = onSnapshot(q, (querySnapshot) => {
             let todosArr = [];
             querySnapshot.forEach((doc) => {
