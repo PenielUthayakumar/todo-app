@@ -9,7 +9,7 @@ import {
     updateDoc,
     doc,
     addDoc,
-	deleteDoc,
+    deleteDoc,
     orderBy,
 } from "firebase/firestore";
 
@@ -47,16 +47,20 @@ function App() {
 
     // Read todo from firebase
     useEffect(() => {
-        const q = query(collection(db, "todos"), orderBy("createdAt", "desc")); // Add the orderBy clause here
+        const q = query(
+            collection(db, "todos"),
+            orderBy("createdAt", "desc"),
+            orderBy("completed", "asc")
+        ); // Add the orderBy clause here
         const unsubscribe = onSnapshot(q, (querySnapshot) => {
-          let todosArr = [];
-          querySnapshot.forEach((doc) => {
-            todosArr.push({ ...doc.data(), id: doc.id });
-          });
-          setTodos(todosArr);
+            let todosArr = [];
+            querySnapshot.forEach((doc) => {
+                todosArr.push({ ...doc.data(), id: doc.id });
+            });
+            setTodos(todosArr);
         });
         return () => unsubscribe;
-      }, []);
+    }, []);
 
     // Update todo in firebase
     const toggleComplete = async (todo) => {
@@ -66,10 +70,9 @@ function App() {
     };
 
     // Delete todo
-	const deleteTodo = async (id) => {
-		await deleteDoc(doc(db, 'todos', id))
-	}
-
+    const deleteTodo = async (id) => {
+        await deleteDoc(doc(db, "todos", id));
+    };
 
     return (
         <div className={style.bg}>
@@ -96,16 +99,13 @@ function App() {
                             key={index}
                             todo={todo}
                             toggleComplete={toggleComplete}
-							deleteTodo={deleteTodo}
+                            deleteTodo={deleteTodo}
                         />
                     ))}
                 </ul>
 
                 {todos.length < 1 ? null : (
-                    <p className={style.count}>
-                        {" "}
-                        You have {todos.length} Todos
-                    </p>
+                    <p className={style.count}>You have {todos.length} Todos</p>
                 )}
             </div>
         </div>
